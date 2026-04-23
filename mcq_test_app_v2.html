@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strict MCQ Test Application</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #e67e22;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            user-select: none; /* Prevent text selection during test */
+        }
+
+        .container {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 650px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 { color: var(--primary-color); margin-bottom: 1.5rem; }
+        
+        .screen { display: none; }
+        .active { display: block; }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 15px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn:active { transform: translateY(0); }
+
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-container {
+            text-align: left;
+            margin-top: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .option {
+            background: #fdfdfd;
+            margin: 12px 0;
+            padding: 15px 20px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover { 
+            border-color: var(--accent-color);
+            background: #f7faff;
+        }
+
+        .option.selected {
+            background: #ebf5fb;
+            border-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        #score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--success-color);
+            margin: 20px 0;
+        }
+
+        .warning-text {
+            color: var(--warning-color);
+            font-size: 0.85rem;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen active">
+        <h1>Darda Kio Aaaaa Singhhhhhhh</h1>
+        <p> Once you start, you cannot go back or restart until the test is complete.</p>
+        <div style="margin-top: 30px;">
+           <!-- <button class="btn" onclick="confirmStart('english')">English Test</button> -->
+            <button class="btn" onclick="confirmStart('maths')">REASONING Test</button>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="screen">
+        <div class="meta-info">
+            <span id="subject-label">Subject</span>
+            <span>Question <span id="current-q-num">1</span> of <span id="total-q-num">0</span></span>
+        </div>
+        <div class="progress-bar-container">
+            <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+        
+        <div id="question-area" class="question-container">
+            <h3 id="question-text" style="line-height: 1.4;">Question goes here?</h3>
+            <ul id="options-list" class="options">
+                <!-- Options injected here -->
+            </ul>
+        </div>
+        
+        <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+            <button id="next-btn" class="btn" onclick="nextQuestion()" disabled>Confirm & Next</button>
+            <p class="warning-text">Note: You cannot return to this question after clicking Next.</p>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <h1>Test Result</h1>
+        <p id="result-subject-text">Subject Test Completed</p>
+        <div id="score-display">0 / 0</div>
+        <h2 id="feedback-text">ki gall hogyi danasourr uncle</h2>
+        <p id="percentage-text">0%</p>
+        <button class="btn" onclick="location.reload()">Return to Main Menu</button>
+    </div>
+</div>
+
+<script>
+    // DATA SECTION - PASTE YOUR QUESTIONS HERE
+    const quizData = {
+        // english: [
+        //     {
+        //         question: "Which of the following is a synonym for 'Abundant'?",
+        //         options: ["Scarce", "Plentiful", "Rare", "Limited"],
+        //         correct: 1
+        //     },
+        //     {
+        //         question: "Identify the correct spelling:",
+        //         options: ["Accomodation", "Acommodation", "Accommodation", "Accomodasion"],
+        //         correct: 2
+        //     }
+        //     // Add more English questions here...
+        // ],
+
+        // maths: [
+        //     {
+        //         question: "What is the value of x if 2x + 5 = 15?",
+        //         options: ["5", "10", "7.5", "2"],
+        //         correct: 0
+        //     },
+        //     {
+        //         question: "What is the square root of 144?",
+        //         options: ["10", "11", "12", "14"],
+        //         correct: 2
+        //     }
+        //     // Add more Maths questions here...
+        // ]
+
+
+
+       maths: [
+            { question: "X : 224 :: 17 : Y (Note: Operations on whole numbers only)", options: ["X=14, Y=288", "X=15, Y=288", "X=15, Y=289", "X=14, Y=289"], correct: 3 },
+
+{ question: "X : 171 :: 17 : Y", options: ["X=15, Y=289", "X=13, Y=289", "X=13, Y=291", "X=15, Y=291"], correct: 1 },
+
+{ question: "X : 64 :: 26 : Y", options: ["X=23, Y=79", "X=20, Y=79", "X=21, Y=79", "X=21, Y=80"], correct: 2 },
+
+{ question: "X : 82 :: 16 : Y", options: ["X=10, Y=115", "X=10, Y=110", "X=12, Y=110", "X=12, Y=115"], correct: 1 },
+
+{ question: "X : 432 :: 31 : Y", options: ["X=17, Y=565", "X=18, Y=528", "X=17, Y=528", "X=36, Y=546"], correct: 2 },
+
+{ question: "8 : X :: Y : 110", options: ["X=497, Y=5", "X=757, Y=18", "X=575, Y=11", "X=457, Y=7"], correct: 3 },
+
+{ question: "On what dates of March 2005 did Friday fall?", options: ["4th, 11th, 18th, 25th", "5th, 12th, 19th, 26th", "3rd, 10th, 17th, 24th", "6th, 13th, 20th, 27th"], correct: 0 },
+
+{ question: "If 18th February 2005 falls on Saturday, what day is 18th February 2007?", options: ["Friday", "Thursday", "Wednesday", "Monday"], correct: 3 },
+
+{ question: "What was the day on 25th April 1960?", options: ["Sunday", "Monday", "Tuesday", "Thursday"], correct: 1 },
+
+{ question: "The earliest year next to 2001 whose calendar perfectly matches it is:", options: ["2007", "2012", "2018", "2035"], correct: 0 },
+
+{ question: "Pointing to a woman, a man says: 'She is the only daughter of my wife's mother-in-law.' How is the woman related to the man?", options: ["Daughter", "Wife", "Sister", "Sister-in-law"], correct: 1 },
+
+{ question: "A said to B: 'Your mother's husband's sister is my aunt.' How is B related to A?", options: ["Daughter", "Granddaughter", "Mother", "Sister"], correct: 3 },
+
+{ question: "P is the brother of Q. R is the mother of Q. S is the father of R. T is the mother of S. How is P related to T?", options: ["Granddaughter", "Great-grandson", "Grandson", "Grandmother"], correct: 1 },
+
+{ question: "Deepak said, 'His only brother is the father of my daughter's father.' How is the gentleman related to Deepak?", options: ["Grandfather", "Father", "Brother-in-law", "Uncle"], correct: 3 },
+
+{ question: "P×Q = P is mother of Q; P÷Q = P is brother of Q; P+Q = P is sister of Q; P−Q = P is son of Q. Which expression means 'D is maternal uncle of T'?", options: ["D×R+T", "D÷R+T", "T×J−N÷D", "D−R+T"], correct: 1 },
+
+{ question: "A+B = A is daughter of B; A−B = A is father of B; A÷B = A is son of B; A×B = A is wife of B. In 'A×B−C', how is C related to A?", options: ["Son", "Daughter", "Son or Daughter", "Cannot be determined"], correct: 2 },
+
+{ question: "Scribble : Write :: Stammer : ?", options: ["Walk", "Play", "Speak", "Dance"], correct: 2 },
+
+{ question: "Acting : Theatre :: Gambling : ?", options: ["Casino", "Club", "Bar", "Gym"], correct: 0 },
+
+{ question: "Arrange in meaningful sequence: 1. Rain 2. Vaporization 3. Water 4. Condensation 5. Cloud", options: ["1–3–2–4–5", "5–3–4–1–2", "3–2–5–4–1", "2–3–5–4–1"], correct: 2 },
+
+{ question: "Arrange in meaningful order: 1. Study 2. Books 3. Examination 4. Students 5. Results", options: ["4–2–3–1–5", "4–2–1–3–5", "2–1–4–3–5", "2–3–1–4–5"], correct: 1 },
+
+{ question: "The word 'REASON' is written in a mirror. Which of the following represents its mirror image?", options: ["Normal reverse", "Individual mirror-flip, same order", "Whole word reversed", "Flip + reverse"], correct: 3 },
+
+{ question: "In a series: Circle → Square → Triangle → Pentagon → ? What comes next in the pattern of sides?", options: ["Hexagon (6 sides)", "Heptagon (7 sides)", "Circle again", "Square (4 sides)"], correct: 0 },
+
+{ question: "A rectangular paper is folded once (left half over right), then a cut is made on the folded left edge. When unfolded, what shape hole appears?", options: ["One hole on left only", "Two symmetrical holes", "One hole in the center", "No hole; it was a crease"], correct: 1 },
+
+{ question: "How many triangles are in a figure with a large triangle divided into 4 equal smaller triangles by joining the midpoints of all three sides?", options: ["4", "5", "6", "8"], correct: 3 },
+
+{ question: "Small triangle : Large triangle :: Small circle : ?", options: ["Small square", "Large circle", "Large oval", "Small oval"], correct: 1 }
+        ]
+
+
+
+
+
+
+
+
+    };
+
+    let currentSubject = '';
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOption = null;
+    let isTestInProgress = false;
+
+    // Prevent accidental page refresh/navigation during test
+    window.onbeforeunload = function() {
+        if (isTestInProgress) {
+            return "A test is in progress. Your progress will be lost if you leave.";
+        }
+    };
+
+    function confirmStart(subject) {
+        if (confirm(`Start the ${subject.toUpperCase()} test now? You cannot go back once you begin.`)) {
+            startTest(subject);
+        }
+    }
+
+    function startTest(subject) {
+        isTestInProgress = true;
+        currentSubject = subject;
+        currentQuestionIndex = 0;
+        score = 0;
+        
+        document.getElementById('subject-label').innerText = subject.toUpperCase() + " TEST";
+        document.getElementById('total-q-num').innerText = quizData[subject].length;
+        
+        showScreen('quiz-screen');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const data = quizData[currentSubject][currentQuestionIndex];
+        const total = quizData[currentSubject].length;
+        
+        // Update UI
+        document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+        document.getElementById('question-text').innerText = data.question;
+        document.getElementById('progress-fill').style.width = ((currentQuestionIndex) / total * 100) + "%";
+        
+        const optionsList = document.getElementById('options-list');
+        optionsList.innerHTML = '';
+        selectedOption = null;
+        document.getElementById('next-btn').disabled = true;
+
+        data.options.forEach((option, index) => {
+            const li = document.createElement('li');
+            li.className = 'option';
+            li.innerHTML = `<span style="margin-right: 15px; opacity: 0.5; font-weight: bold;">${String.fromCharCode(65 + index)}.</span> ${option}`;
+            li.onclick = () => selectOption(index, li);
+            optionsList.appendChild(li);
+        });
+    }
+
+    function selectOption(index, element) {
+        selectedOption = index;
+        const options = document.querySelectorAll('.option');
+        options.forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('next-btn').disabled = false;
+    }
+
+    function nextQuestion() {
+        // Record score
+        if (selectedOption === quizData[currentSubject][currentQuestionIndex].correct) {
+            score++;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizData[currentSubject].length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        isTestInProgress = false; // Test finished
+        showScreen('results-screen');
+        
+        const total = quizData[currentSubject].length;
+        const percentage = Math.round((score / total) * 100);
+        
+        document.getElementById('result-subject-text').innerText = `${currentSubject.toUpperCase()} Test Completed`;
+        document.getElementById('score-display').innerText = `${score} / ${total}`;
+        document.getElementById('percentage-text').innerText = `Final Score: ${percentage}%`;
+        
+        let feedback = "";
+        if (percentage === 100) feedback = "Perfect Score! Excellent.";
+        else if (percentage >= 75) feedback = "Great job! Very well done.";
+        else if (percentage >= 50) feedback = "Good effort, you passed.";
+        else feedback = "Keep studying and try again.";
+        
+        document.getElementById('feedback-text').innerText = feedback;
+    }
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
