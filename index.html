@@ -538,31 +538,39 @@
 <script>
     const quizData = {
         maths: [
-            { question: "X : 224 :: 17 : Y (Note: Operations on whole numbers only)", options: ["X=14, Y=288", "X=15, Y=288", "X=15, Y=289", "X=14, Y=289"], correct: 3 },
-            { question: "X : 171 :: 17 : Y", options: ["X=15, Y=289", "X=13, Y=289", "X=13, Y=291", "X=15, Y=291"], correct: 1 },
-            { question: "X : 64 :: 26 : Y", options: ["X=23, Y=79", "X=20, Y=79", "X=21, Y=79", "X=21, Y=80"], correct: 2 },
-            { question: "X : 82 :: 16 : Y", options: ["X=10, Y=115", "X=10, Y=110", "X=12, Y=110", "X=12, Y=115"], correct: 1 },
-            { question: "X : 432 :: 31 : Y", options: ["X=17, Y=565", "X=18, Y=528", "X=17, Y=528", "X=36, Y=546"], correct: 2 },
-            { question: "8 : X :: Y : 110", options: ["X=497, Y=5", "X=757, Y=18", "X=575, Y=11", "X=457, Y=7"], correct: 3 },
-            { question: "On what dates of March 2005 did Friday fall?", options: ["4th, 11th, 18th, 25th", "5th, 12th, 19th, 26th", "3rd, 10th, 17th, 24th", "6th, 13th, 20th, 27th"], correct: 0 },
-            { question: "If 18th February 2005 falls on Saturday, what day is 18th February 2007?", options: ["Friday", "Thursday", "Wednesday", "Monday"], correct: 3 },
-            { question: "What was the day on 25th April 1960?", options: ["Sunday", "Monday", "Tuesday", "Thursday"], correct: 1 },
-            { question: "The earliest year next to 2001 whose calendar perfectly matches it is:", options: ["2007", "2012", "2018", "2035"], correct: 0 },
-            { question: "Pointing to a woman, a man says: 'She is the only daughter of my wife's mother-in-law.' How is the woman related to the man?", options: ["Daughter", "Wife", "Sister", "Sister-in-law"], correct: 1 },
-            { question: "A said to B: 'Your mother's husband's sister is my aunt.' How is B related to A?", options: ["Daughter", "Granddaughter", "Mother", "Sister"], correct: 3 },
-            { question: "P is the brother of Q. R is the mother of Q. S is the father of R. T is the mother of S. How is P related to T?", options: ["Granddaughter", "Great-grandson", "Grandson", "Grandmother"], correct: 1 },
-            { question: "Deepak said, 'His only brother is the father of my daughter's father.' How is the gentleman related to Deepak?", options: ["Grandfather", "Father", "Brother-in-law", "Uncle"], correct: 3 },
-            { question: "P×Q = P is mother of Q; P÷Q = P is brother of Q; P+Q = P is sister of Q; P−Q = P is son of Q. Which expression means 'D is maternal uncle of T'?", options: ["D×R+T", "D÷R+T", "T×J−N÷D", "D−R+T"], correct: 1 },
-            { question: "A+B = A is daughter of B; A−B = A is father of B; A÷B = A is son of B; A×B = A is wife of B. In 'A×B−C', how is C related to A?", options: ["Son", "Daughter", "Son or Daughter", "Cannot be determined"], correct: 2 },
-            { question: "Scribble : Write :: Stammer : ?", options: ["Walk", "Play", "Speak", "Dance"], correct: 2 },
-            { question: "Acting : Theatre :: Gambling : ?", options: ["Casino", "Club", "Bar", "Gym"], correct: 0 },
-            { question: "Arrange in meaningful sequence: 1. Rain 2. Vaporization 3. Water 4. Condensation 5. Cloud", options: ["1–3–2–4–5", "5–3–4–1–2", "3–2–5–4–1", "2–3–5–4–1"], correct: 2 },
-            { question: "Arrange in meaningful order: 1. Study 2. Books 3. Examination 4. Students 5. Results", options: ["4–2–3–1–5", "4–2–1–3–5", "2–1–4–3–5", "2–3–1–4–5"], correct: 1 },
-            { question: "The word 'REASON' is written in a mirror. Which of the following represents its mirror image?", options: ["Normal reverse", "Individual mirror-flip, same order", "Whole word reversed", "Flip + reverse"], correct: 3 },
-            { question: "In a series: Circle → Square → Triangle → Pentagon → ? What comes next in the pattern of sides?", options: ["Hexagon (6 sides)", "Heptagon (7 sides)", "Circle again", "Square (4 sides)"], correct: 0 },
-            { question: "A rectangular paper is folded once (left half over right), then a cut is made on the folded left edge. When unfolded, what shape hole appears?", options: ["One hole on left only", "Two symmetrical holes", "One hole in the center", "No hole; it was a crease"], correct: 1 },
-            { question: "How many triangles are in a figure with a large triangle divided into 4 equal smaller triangles by joining the midpoints of all three sides?", options: ["4", "5", "6", "8"], correct: 3 },
-            { question: "Small triangle : Large triangle :: Small circle : ?", options: ["Small square", "Large circle", "Large oval", "Small oval"], correct: 1 }
+           { question: "Convert 37.5% into a fraction.", options: ["3/8", "5/8", "1/4", "7/8"], correct: 0 },
+  { question: "If 15% of a number is 45, what is 80% of that number?", options: ["200", "240", "300", "320"], correct: 1 },
+  { question: "What is 16 2/3% of 1200?", options: ["150", "180", "200", "250"], correct: 2 },
+  { question: "A number is increased by 20% and then decreased by 20%. What is the net change?", options: ["No change", "4% increase", "4% decrease", "2% decrease"], correct: 2 },
+  { question: "If A's salary is 25% more than B's, then B's salary is how much percent less than A's?", options: ["20%", "25%", "16.66%", "33.33%"], correct: 0 },
+
+  // Guess Paper 2
+  { question: "A man spends 75% of his income. His income increases by 20% and his expenditure increases by 10%. Find the percentage increase in his savings.", options: ["30%", "40%", "50%", "60%"], correct: 2 },
+  { question: "Radha spends 40% of her salary on food, 20% on house rent, 10% on entertainment and 10% on conveyance. If her savings at the end of a month are ₹1500, then her monthly salary is:", options: ["₹6000", "₹7500", "₹8000", "₹10000"], correct: 1 },
+  { question: "The ratio of boys and girls in a school is 3:2. If 20% of the boys and 25% of the girls are scholarship holders, the percentage of students who are not scholarship holders is:", options: ["78%", "75%", "72%", "80%"], correct: 0 },
+  { question: "A person gave 20% of his income to his elder son, 30% of the remaining to the younger son and 10% of the balance, he donated to a trust. He is left with ₹10080. His income was:", options: ["₹20000", "₹25000", "₹30000", "₹40000"], correct: 0 },
+  { question: "If the price of sugar is increased by 20%, by how much percent must a housewife reduce her consumption so as not to increase her expenditure?", options: ["15%", "16 2/3%", "20%", "25%"], correct: 1 },
+
+  // Guess Paper 3
+  { question: "The population of a town increases by 5% annually. If its present population is 92610, what was it 3 years ago?", options: ["75000", "80000", "85000", "90000"], correct: 1 },
+  { question: "The value of a machine depreciates at the rate of 10% every year. It was purchased 3 years ago. If its present value is ₹8748, its purchase price was:", options: ["₹10000", "₹12000", "₹14000", "₹16000"], correct: 1 },
+  { question: "A number is first increased by 10% and then reduced by 10%. The number:", options: ["does not change", "decreases by 1%", "increases by 1%", "none of these"], correct: 1 },
+  { question: "In a library, 20% of the books are in Hindi, 50% of the remaining are in English and 30% of the remaining are in French. The remaining 6300 books are in regional languages. What is the total number of books in the library?", options: ["22500", "25000", "27500", "30000"], correct: 0 },
+  { question: "If the radius of a circle is increased by 50%, its area is increased by:", options: ["125%", "100%", "75%", "50%"], correct: 0 },
+
+  // Guess Paper 4
+  { question: "In an election between two candidates, the candidate who gets 40% of the total votes is defeated by 15000 votes. The number of votes polled by the winning candidate is:", options: ["30000", "45000", "37500", "75000"], correct: 1 },
+  { question: "In an election, 10% of the voters on the voters' list did not cast their votes and 60 voters cast their ballot papers blank. There were only two candidates. The winner was supported by 47% of all the voters in the list and he got 308 votes more than his rival. The number of voters on the list was:", options: ["3600", "6200", "4575", "6028"], correct: 1 },
+  { question: "A student has to obtain 33% of the total marks to pass. He got 125 marks and failed by 40 marks. The maximum marks are:", options: ["300", "500", "800", "1000"], correct: 1 },
+  { question: "In an examination, 35% of the candidates failed in Mathematics and 25% in English. If 10% failed in both Mathematics and English, then how much percent of candidates passed in both the subjects?", options: ["50%", "55%", "40%", "60%"], correct: 0 },
+  { question: "In a test, Rajesh got 112 marks which was 32 more than the passing marks. Sonal got 75% marks which was 70 more than the passing marks. What is the minimum passing percentage of the test?", options: ["35%", "40%", "45%", "50%"], correct: 1 },
+
+  // Guess Paper 5
+  { question: "36% of a particular number is 756. What is 54% of the same number?", options: ["1045", "1134", "1165", "1240"], correct: 1 },
+  { question: "The price of an item is increased by 20% and then two successive discounts of 10% and 10% are given. What is the net change in the price?", options: ["2.8% decrease", "2.8% increase", "3% decrease", "No change"], correct: 0 },
+  { question: "If the numerator of a fraction is increased by 200% and the denominator is increased by 350%, the resultant fraction is 5/12. What was the original fraction?", options: ["5/8", "5/9", "7/12", "11/12"], correct: 0 },
+  { question: "Fresh fruit contains 68% water and dry fruit contains 20% water. How much dry fruit can be obtained from 100 kg of fresh fruits?", options: ["32 kg", "40 kg", "52 kg", "80 kg"], correct: 1 },
+  { question: "Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:", options: ["2:5", "3:5", "4:5", "6:7"], correct: 2 }
         ]
     };
 
