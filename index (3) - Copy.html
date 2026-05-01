@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Test Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #22263a;
+            --border: #2e3350;
+            --accent: #6c63ff;
+            --accent-dim: rgba(108,99,255,0.15);
+            --success: #22c55e;
+            --success-dim: rgba(34,197,94,0.15);
+            --danger: #ef4444;
+            --danger-dim: rgba(239,68,68,0.15);
+            --warning: #f59e0b;
+            --text: #e8eaf0;
+            --text-muted: #6b7280;
+            --text-dim: #9ca3af;
+            --mono: 'Space Mono', monospace;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            user-select: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(108,99,255,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 680px;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+
+        /* ── SCREENS ── */
+        .screen { display: none; animation: fadeUp 0.4s ease both; }
+        .screen.active { display: block; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── START SCREEN ── */
+        .start-badge {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 3px 10px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: var(--mono);
+            font-size: 1.8rem;
+            color: var(--text);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .start-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* ── SUBJECT GRID ── */
+        .subject-label {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .subject-card {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem 0.8rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .subject-card:hover {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .subject-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+
+        .subject-name {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .subject-count {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* ── CHAPTER LIST ── */
+        .chapter-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+
+        .chapter-row {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .chapter-info { flex: 1; }
+
+        .chapter-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .chapter-qcount {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-sep { color: var(--border); font-size: 0.8rem; }
+
+        .breadcrumb-active {
+            color: var(--accent);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: var(--sans);
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(108,99,255,0.3);
+        }
+
+        .btn:hover { background: #7c75ff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(108,99,255,0.4); }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { background: var(--surface2); color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.82rem;
+            border-radius: 8px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            box-shadow: none;
+        }
+        .btn-ghost:hover { background: var(--surface2); border-color: var(--text-muted); box-shadow: none; }
+
+        .btn-danger {
+            background: var(--danger);
+            box-shadow: 0 4px 20px rgba(239,68,68,0.3);
+        }
+        .btn-danger:hover { background: #f87171; box-shadow: 0 8px 24px rgba(239,68,68,0.4); }
+
+        .btn-success {
+            background: var(--success);
+            box-shadow: 0 4px 20px rgba(34,197,94,0.3);
+        }
+        .btn-success:hover { background: #4ade80; box-shadow: 0 8px 24px rgba(34,197,94,0.4); }
+
+        /* ── QUIZ SCREEN ── */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .q-counter {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .q-counter span { color: var(--accent); font-weight: 700; }
+
+        .q-subject-tag {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .timer-badge {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 12px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .timer-badge.urgent { color: var(--danger); border-color: var(--danger); }
+        .timer-badge svg { width: 14px; height: 14px; }
+
+        .progress-track {
+            height: 5px;
+            background: var(--surface2);
+            border-radius: 3px;
+            margin-bottom: 1.8rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            border-radius: 3px;
+            transition: width 0.4s cubic-bezier(.4,0,.2,1);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .options { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+        .option {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.95rem;
+            transition: all 0.18s;
+        }
+
+        .option:hover { border-color: var(--accent); background: var(--accent-dim); }
+        .option.selected { border-color: var(--accent); background: var(--accent-dim); }
+
+        .opt-letter {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            min-width: 22px;
+            text-align: center;
+            background: var(--surface);
+            border-radius: 5px;
+            padding: 3px 6px;
+            border: 1px solid var(--border);
+            transition: all 0.18s;
+        }
+
+        .option.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.8rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-note {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ── RESULTS SCREEN ── */
+        .score-ring-wrapper { position: relative; width: 130px; height: 130px; margin: 1.5rem auto; }
+
+        .score-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+        .score-ring circle { fill: none; stroke-width: 10; }
+        .ring-bg { stroke: var(--surface2); }
+        .ring-fill { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1); }
+
+        .score-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .big-score { font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; }
+        .big-pct { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
+
+        .feedback { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text); }
+
+        .result-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+        .result-stats {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .rs { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 1.2rem; text-align: center; min-width: 90px; }
+        .rs .v { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; }
+        .rs .l { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; }
+        .rs.correct .v { color: var(--success); }
+        .rs.wrong .v { color: var(--danger); }
+        .rs.time .v { color: var(--warning); }
+
+        /* ── ANSWER REVIEW ── */
+        .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+        .review-title { font-family: var(--mono); font-size: 0.85rem; color: var(--text-dim); letter-spacing: 0.05em; }
+        .review-list { display: flex; flex-direction: column; gap: 14px; max-height: 420px; overflow-y: auto; padding-right: 6px; }
+        .review-list::-webkit-scrollbar { width: 4px; }
+        .review-list::-webkit-scrollbar-track { background: var(--surface2); border-radius: 2px; }
+        .review-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .review-card { background: var(--surface2); border-radius: 12px; padding: 1rem 1.2rem; border: 1px solid var(--border); }
+        .review-card.correct-card { border-color: rgba(34,197,94,0.3); }
+        .review-card.wrong-card   { border-color: rgba(239,68,68,0.3); }
+
+        .review-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; gap: 1rem; }
+        .rc-qnum { font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+        .rc-status { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+        .rc-status.correct { background: var(--success-dim); color: var(--success); }
+        .rc-status.wrong   { background: var(--danger-dim); color: var(--danger); }
+        .rc-question { font-size: 0.88rem; line-height: 1.5; color: var(--text-dim); flex: 1; }
+        .rc-time { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 0.8rem; }
+        .rc-options { display: flex; flex-direction: column; gap: 6px; }
+        .rc-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.83rem; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; }
+        .rc-opt.opt-correct { background: var(--success-dim); border-color: rgba(34,197,94,0.35); color: var(--success); }
+        .rc-opt.opt-wrong   { background: var(--danger-dim);  border-color: rgba(239,68,68,0.35);  color: var(--danger); }
+        .rc-opt.opt-neutral { background: transparent; color: var(--text-muted); }
+        .rc-opt-letter { font-family: var(--mono); font-size: 0.68rem; font-weight: 700; min-width: 18px; opacity: 0.6; }
+        .opt-icon { margin-left: auto; font-size: 0.8rem; }
+
+        /* ── DIVIDER ── */
+        .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+
+        .total-time { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: -0.5rem; margin-bottom: 1.5rem; }
+
+        /* ── ADMIN PANEL ── */
+        .admin-toggle {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+
+        .form-label {
+            display: block;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 0.92rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus { border-color: var(--accent); }
+        .form-control option { background: var(--surface2); }
+
+        textarea.form-control { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+        .options-grid { display: flex; flex-direction: column; gap: 8px; }
+
+        .option-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .opt-prefix {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            min-width: 22px;
+            text-align: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 3px 6px;
+        }
+
+        .admin-panel-inner {
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .admin-panel-inner::-webkit-scrollbar { width: 4px; }
+        .admin-panel-inner::-webkit-scrollbar-track { background: var(--surface2); border-radius: 2px; }
+        .admin-panel-inner::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .alert {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            display: none;
+        }
+
+        .alert.success { background: var(--success-dim); border: 1px solid rgba(34,197,94,0.3); color: var(--success); }
+        .alert.error   { background: var(--danger-dim);  border: 1px solid rgba(239,68,68,0.3);  color: var(--danger); }
+        .alert.show { display: block; animation: fadeUp 0.3s ease both; }
+
+        .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 520px) {
+            .admin-form-grid { grid-template-columns: 1fr; }
+            .subject-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .new-chapter-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+        .new-chapter-row .form-control { flex: 1; }
+
+        .correct-radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .correct-radio {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 12px;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-size: 0.85rem;
+        }
+
+        .correct-radio input[type="radio"] { accent-color: var(--accent); }
+        .correct-radio:has(input:checked) { border-color: var(--accent); background: var(--accent-dim); }
+
+        .persistence-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            margin-top: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="screen active">
+        <div class="start-badge">⚡ MCQ Test</div>
+        <div class="start-header">
+            <h1>Darda Kio Aaaaa Singhhhhhhh</h1>
+        </div>
+
+        <div id="subject-view">
+            <div class="subject-label">Select a Subject</div>
+            <div class="subject-grid" id="subject-grid"></div>
+        </div>
+
+        <div id="chapter-view" style="display:none;">
+            <div class="breadcrumb">
+                <span class="breadcrumb-item" style="cursor:pointer;color:var(--accent);" onclick="showSubjects()">Subjects</span>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-active" id="breadcrumb-subject">—</span>
+            </div>
+            <div class="chapter-list" id="chapter-list"></div>
+            <button class="btn btn-ghost" style="width:100%;" onclick="showSubjects()">← Back to Subjects</button>
+        </div>
+
+        <div class="admin-toggle">
+            <button class="btn btn-ghost btn-sm" onclick="showScreen('admin-screen')">🔧 Admin Panel</button>
+        </div>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" class="screen">
+        <div class="quiz-header">
+            <div class="quiz-meta">
+                <div class="q-counter">Q&nbsp;<span id="current-q-num">1</span>&nbsp;/&nbsp;<span id="total-q-num">0</span></div>
+                <div class="q-subject-tag" id="quiz-subject-tag"></div>
+            </div>
+            <div class="timer-badge" id="timer-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span id="timer-display">0:00</span>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div id="progress-fill" class="progress-fill" style="width:0%"></div>
+        </div>
+        <h3 id="question-text" class="question-text">Question goes here?</h3>
+        <ul id="options-list" class="options"></ul>
+        <div class="quiz-footer">
+            <span class="footer-note">Cannot return after confirming</span>
+            <button id="next-btn" class="btn" onclick="nextQuestion()" disabled>Confirm &amp; Next →</button>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen" class="screen">
+        <div style="text-align:center;">
+            <div class="start-badge">📋 Results</div>
+            <h1 id="result-title" style="margin-bottom:0.3rem;font-size:1.2rem;"></h1>
+            <div class="score-ring-wrapper">
+                <svg viewBox="0 0 130 130" class="score-ring">
+                    <circle class="ring-bg" cx="65" cy="65" r="55" />
+                    <circle class="ring-fill" id="ring-fill" cx="65" cy="65" r="55" stroke-dasharray="345.4" stroke-dashoffset="345.4" />
+                </svg>
+                <div class="score-label">
+                    <div class="big-score" id="big-score">0/0</div>
+                    <div class="big-pct" id="big-pct">0%</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-text">—</div>
+            <div class="total-time" id="total-time-display">Total time: —</div>
+            <div class="result-stats">
+                <div class="rs correct"><div class="v" id="stat-correct">0</div><div class="l">Correct</div></div>
+                <div class="rs wrong"><div class="v" id="stat-wrong">0</div><div class="l">Wrong</div></div>
+                <div class="rs time"><div class="v" id="stat-avg-time">—</div><div class="l">Avg / Q</div></div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="review-header">
+            <div class="review-title">ANSWER REVIEW</div>
+        </div>
+        <div class="review-list" id="review-list"></div>
+
+        <div style="text-align:center; margin-top:2rem;">
+            <button class="btn" onclick="goHome()">↩ Return to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL SCREEN -->
+    <div id="admin-screen" class="screen">
+        <div class="start-badge">🔧 Admin Panel</div>
+        <h1 style="font-size:1.4rem; margin-bottom:0.4rem;">Add New Question</h1>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.8rem; line-height:1.6;">
+            Questions are saved to your browser's local storage and persist across refreshes.
+        </p>
+
+        <div id="admin-alert" class="alert"></div>
+
+        <div class="admin-panel-inner">
+            <div class="admin-form-grid">
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select id="admin-subject" class="form-control" onchange="onAdminSubjectChange()">
+                        <option value="">— Select Subject —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Chapter</label>
+                    <select id="admin-chapter" class="form-control" onchange="onAdminChapterChange()">
+                        <option value="">— Select Chapter —</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="new-chapter-group" style="display:none;">
+                <label class="form-label">New Chapter Name</label>
+                <input type="text" id="new-chapter-name" class="form-control" placeholder="e.g. Chapter 2: Algebra">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Question</label>
+                <textarea id="admin-question" class="form-control" placeholder="Type your question here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Options (4 required)</label>
+                <div class="options-grid">
+                    <div class="option-input-row">
+                        <span class="opt-prefix">A</span>
+                        <input type="text" id="opt-0" class="form-control" placeholder="Option A">
+                    </div>
+                    <div class="option-input-row">
+                        <span class="opt-prefix">B</span>
+                        <input type="text" id="opt-1" class="form-control" placeholder="Option B">
+                    </div>
+                    <div class="option-input-row">
+                        <span class="opt-prefix">C</span>
+                        <input type="text" id="opt-2" class="form-control" placeholder="Option C">
+                    </div>
+                    <div class="option-input-row">
+                        <span class="opt-prefix">D</span>
+                        <input type="text" id="opt-3" class="form-control" placeholder="Option D">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Correct Answer</label>
+                <div class="correct-radio-group">
+                    <label class="correct-radio"><input type="radio" name="correct-ans" value="0"> A</label>
+                    <label class="correct-radio"><input type="radio" name="correct-ans" value="1"> B</label>
+                    <label class="correct-radio"><input type="radio" name="correct-ans" value="2"> C</label>
+                    <label class="correct-radio"><input type="radio" name="correct-ans" value="3"> D</label>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+                <button class="btn btn-ghost" onclick="goHome()">← Back</button>
+                <button class="btn btn-success" onclick="submitAdminForm()">✓ Add Question</button>
+            </div>
+            <div class="persistence-note">💾 Data saved in localStorage — survives page refresh</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+//  DEFAULT QUIZ DATA  (Subject → Chapter → Questions[])
+// ─────────────────────────────────────────────────────────────
+const defaultQuizData = {
+
+
+
+
+
+    Maths: {
+         "Chapter 1: percentage-1 ": [
+        { question: "Convert 37.5% into a fraction.", options: ["3/8", "5/8", "1/4", "7/8"], correct: 0 },
+  { question: "If 15% of a number is 45, what is 80% of that number?", options: ["200", "240", "300", "320"], correct: 1 },
+  { question: "What is 16 2/3% of 1200?", options: ["150", "180", "200", "250"], correct: 2 },
+  { question: "A number is increased by 20% and then decreased by 20%. What is the net change?", options: ["No change", "4% increase", "4% decrease", "2% decrease"], correct: 2 },
+  { question: "If A's salary is 25% more than B's, then B's salary is how much percent less than A's?", options: ["20%", "25%", "16.66%", "33.33%"], correct: 0 },
+
+  // Guess Paper 2
+  { question: "A man spends 75% of his income. His income increases by 20% and his expenditure increases by 10%. Find the percentage increase in his savings.", options: ["30%", "40%", "50%", "60%"], correct: 2 },
+  { question: "Radha spends 40% of her salary on food, 20% on house rent, 10% on entertainment and 10% on conveyance. If her savings at the end of a month are ₹1500, then her monthly salary is:", options: ["₹6000", "₹7500", "₹8000", "₹10000"], correct: 1 },
+  { question: "The ratio of boys and girls in a school is 3:2. If 20% of the boys and 25% of the girls are scholarship holders, the percentage of students who are not scholarship holders is:", options: ["78%", "75%", "72%", "80%"], correct: 0 },
+  { question: "A person gave 20% of his income to his elder son, 30% of the remaining to the younger son and 10% of the balance, he donated to a trust. He is left with ₹10080. His income was:", options: ["₹20000", "₹25000", "₹30000", "₹40000"], correct: 0 },
+  { question: "If the price of sugar is increased by 20%, by how much percent must a housewife reduce her consumption so as not to increase her expenditure?", options: ["15%", "16 2/3%", "20%", "25%"], correct: 1 },
+
+  // Guess Paper 3
+  { question: "The population of a town increases by 5% annually. If its present population is 92610, what was it 3 years ago?", options: ["75000", "80000", "85000", "90000"], correct: 1 },
+  { question: "The value of a machine depreciates at the rate of 10% every year. It was purchased 3 years ago. If its present value is ₹8748, its purchase price was:", options: ["₹10000", "₹12000", "₹14000", "₹16000"], correct: 1 },
+  { question: "A number is first increased by 10% and then reduced by 10%. The number:", options: ["does not change", "decreases by 1%", "increases by 1%", "none of these"], correct: 1 },
+  { question: "In a library, 20% of the books are in Hindi, 50% of the remaining are in English and 30% of the remaining are in French. The remaining 6300 books are in regional languages. What is the total number of books in the library?", options: ["22500", "25000", "27500", "30000"], correct: 0 },
+  { question: "If the radius of a circle is increased by 50%, its area is increased by:", options: ["125%", "100%", "75%", "50%"], correct: 0 },
+
+  // Guess Paper 4
+  { question: "In an election between two candidates, the candidate who gets 40% of the total votes is defeated by 15000 votes. The number of votes polled by the winning candidate is:", options: ["30000", "45000", "37500", "75000"], correct: 1 },
+  { question: "In an election, 10% of the voters on the voters' list did not cast their votes and 60 voters cast their ballot papers blank. There were only two candidates. The winner was supported by 47% of all the voters in the list and he got 308 votes more than his rival. The number of voters on the list was:", options: ["3600", "6200", "4575", "6028"], correct: 1 },
+  { question: "A student has to obtain 33% of the total marks to pass. He got 125 marks and failed by 40 marks. The maximum marks are:", options: ["300", "500", "800", "1000"], correct: 1 },
+  { question: "In an examination, 35% of the candidates failed in Mathematics and 25% in English. If 10% failed in both Mathematics and English, then how much percent of candidates passed in both the subjects?", options: ["50%", "55%", "40%", "60%"], correct: 0 },
+  { question: "In a test, Rajesh got 112 marks which was 32 more than the passing marks. Sonal got 75% marks which was 70 more than the passing marks. What is the minimum passing percentage of the test?", options: ["35%", "40%", "45%", "50%"], correct: 1 },
+
+  // Guess Paper 5
+  { question: "36% of a particular number is 756. What is 54% of the same number?", options: ["1045", "1134", "1165", "1240"], correct: 1 },
+  { question: "The price of an item is increased by 20% and then two successive discounts of 10% and 10% are given. What is the net change in the price?", options: ["2.8% decrease", "2.8% increase", "3% decrease", "No change"], correct: 0 },
+  { question: "If the numerator of a fraction is increased by 200% and the denominator is increased by 350%, the resultant fraction is 5/12. What was the original fraction?", options: ["5/8", "5/9", "7/12", "11/12"], correct: 0 },
+  { question: "Fresh fruit contains 68% water and dry fruit contains 20% water. How much dry fruit can be obtained from 100 kg of fresh fruits?", options: ["32 kg", "40 kg", "52 kg", "80 kg"], correct: 1 },
+  { question: "Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:", options: ["2:5", "3:5", "4:5", "6:7"], correct: 2 }
+         ]
+        // "Chapter 2: Blood Relations": [
+        //     { question: "Pointing to a woman, a man says: 'She is the only daughter of my wife's mother-in-law.' How is the woman related to the man?", options: ["Daughter", "Wife", "Sister", "Sister-in-law"], correct: 1 },
+        //     { question: "A said to B: 'Your mother's husband's sister is my aunt.' How is B related to A?", options: ["Daughter", "Granddaughter", "Mother", "Sister"], correct: 3 },
+        //     { question: "P is the brother of Q. R is the mother of Q. S is the father of R. T is the mother of S. How is P related to T?", options: ["Granddaughter", "Great-grandson", "Grandson", "Grandmother"], correct: 1 },
+        //     { question: "Deepak said, 'His only brother is the father of my daughter's father.' How is the gentleman related to Deepak?", options: ["Grandfather", "Father", "Brother-in-law", "Uncle"], correct: 3 },
+        //     { question: "P×Q = P is mother of Q; P÷Q = P is brother of Q; P+Q = P is sister of Q; P−Q = P is son of Q. Which expression means 'D is maternal uncle of T'?", options: ["D×R+T", "D÷R+T", "T×J−N÷D", "D−R+T"], correct: 1 },
+        //     { question: "A+B = A is daughter of B; A−B = A is father of B; A÷B = A is son of B; A×B = A is wife of B. In 'A×B−C', how is C related to A?", options: ["Son", "Daughter", "Son or Daughter", "Cannot be determined"], correct: 2 }
+         //]
+    },
+
+
+
+
+    Reasoning: {
+        // "Chapter 1: Verbal Analogies": [
+        //     { question: "Scribble : Write :: Stammer : ?", options: ["Walk", "Play", "Speak", "Dance"], correct: 2 },
+        //     { question: "Acting : Theatre :: Gambling : ?", options: ["Casino", "Club", "Bar", "Gym"], correct: 0 },
+        //     { question: "Small triangle : Large triangle :: Small circle : ?", options: ["Small square", "Large circle", "Large oval", "Small oval"], correct: 1 }
+        // ],
+        // "Chapter 2: Sequences & Series": [
+        //     { question: "Arrange in meaningful sequence: 1. Rain 2. Vaporization 3. Water 4. Condensation 5. Cloud", options: ["1–3–2–4–5", "5–3–4–1–2", "3–2–5–4–1", "2–3–5–4–1"], correct: 2 },
+        //     { question: "Arrange in meaningful order: 1. Study 2. Books 3. Examination 4. Students 5. Results", options: ["4–2–3–1–5", "4–2–1–3–5", "2–1–4–3–5", "2–3–1–4–5"], correct: 1 }
+        // ],
+        // "Chapter 3: Visual & Spatial": [
+        //     { question: "The word 'REASON' is written in a mirror. Which of the following represents its mirror image?", options: ["Normal reverse", "Individual mirror-flip, same order", "Whole word reversed", "Flip + reverse"], correct: 3 },
+        //     { question: "In a series: Circle → Square → Triangle → Pentagon → ? What comes next in the pattern of sides?", options: ["Hexagon (6 sides)", "Heptagon (7 sides)", "Circle again", "Square (4 sides)"], correct: 0 },
+        //     { question: "A rectangular paper is folded once (left half over right), then a cut is made on the folded left edge. When unfolded, what shape hole appears?", options: ["One hole on left only", "Two symmetrical holes", "One hole in the center", "No hole; it was a crease"], correct: 1 },
+        //     { question: "How many triangles are in a figure with a large triangle divided into 4 equal smaller triangles by joining the midpoints of all three sides?", options: ["4", "5", "6", "8"], correct: 3 }
+        // ]
+    },
+
+
+
+
+    English: {
+        // "Chapter 1: Grammar Basics": [
+        //     { question: "Which sentence is grammatically correct?", options: ["She don't know the answer.", "She doesn't knows the answer.", "She doesn't know the answer.", "She not know the answer."], correct: 2 },
+        //     { question: "Choose the correct form: He __ to school every day.", options: ["go", "goes", "going", "gone"], correct: 1 }
+        // ],
+        // "Chapter 2: Vocabulary": [
+        //     { question: "What is the synonym of 'Benevolent'?", options: ["Cruel", "Kind", "Harsh", "Selfish"], correct: 1 },
+        //     { question: "What is the antonym of 'Verbose'?", options: ["Talkative", "Lengthy", "Concise", "Elaborate"], correct: 2 }
+        // ]
+    },
+
+
+
+
+
+    Punjabi: {
+        // "Chapter 1: ਵਿਆਕਰਣ (Grammar)": [
+        //     { question: "ਹੇਠ ਲਿਖੇ ਵਿੱਚੋਂ ਨਾਂਵ ਕਿਹੜਾ ਹੈ?", options: ["ਸੁੰਦਰ", "ਦੌੜਨਾ", "ਕਿਤਾਬ", "ਹੌਲੀ"], correct: 2 },
+        //     { question: "ਕਿਰਿਆ ਦੀ ਪਛਾਣ ਕਰੋ:", options: ["ਮੇਜ਼", "ਲਿਖਣਾ", "ਮਿੱਠਾ", "ਘਰ"], correct: 1 }
+        // ],
+        // "Chapter 2: ਸਾਹਿਤ (Literature)": [
+        //     { question: "ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਦਾ ਜਨਮ ਕਿੱਥੇ ਹੋਇਆ?", options: ["ਅੰਮ੍ਰਿਤਸਰ", "ਨਨਕਾਣਾ ਸਾਹਿਬ", "ਪਟਿਆਲਾ", "ਲੁਧਿਆਣਾ"], correct: 1 }
+        // ]
+    },
+
+
+
+    
+    Computer: {
+        // "Chapter 1: Basics": [
+        //     { question: "What does CPU stand for?", options: ["Central Processing Unit", "Computer Power Unit", "Central Power Usage", "Core Processing Unit"], correct: 0 },
+        //     { question: "Which of the following is an input device?", options: ["Monitor", "Printer", "Keyboard", "Speaker"], correct: 2 },
+        //     { question: "RAM stands for:", options: ["Read Access Memory", "Random Access Memory", "Remote Access Memory", "Rapid Access Module"], correct: 1 }
+        // ],
+        // "Chapter 2: Internet & Networks": [
+        //     { question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "High Tech Transfer Protocol", "HyperText Transmission Program", "Hybrid Transfer Text Protocol"], correct: 0 },
+        //     { question: "Which device assigns IP addresses in a network?", options: ["Switch", "Hub", "Router", "Modem"], correct: 2 }
+        // ]
+    },
+
+
+
+
+
+    GK: {
+        // "Chapter 1: India": [
+        //     { question: "What is the capital of India?", options: ["Mumbai", "Kolkata", "New Delhi", "Chennai"], correct: 2 },
+        //     { question: "Who is known as the Father of the Nation in India?", options: ["Jawaharlal Nehru", "Subhas Chandra Bose", "B.R. Ambedkar", "Mahatma Gandhi"], correct: 3 },
+        //     { question: "How many states are in India (as of 2024)?", options: ["28", "29", "30", "31"], correct: 0 }
+        // ],
+        // "Chapter 2: World": [
+        //     { question: "Which is the largest ocean?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: 3 },
+        //     { question: "The United Nations was founded in:", options: ["1939", "1945", "1950", "1955"], correct: 1 }
+        // ]
+    }
+
+
+
+
+
+};
+
+// Subject icons & colours
+const subjectMeta = {
+    Maths:    { icon: "➕", color: "#6c63ff" },
+    Reasoning:{ icon: "🧩", color: "#f59e0b" },
+    English:  { icon: "📖", color: "#22c55e" },
+    Punjabi:  { icon: "ਪੰ", color: "#ec4899" },
+    Computer: { icon: "💻", color: "#06b6d4" },
+    GK:       { icon: "🌍", color: "#8b5cf6" }
+};
+
+// ─────────────────────────────────────────────────────────────
+//  PERSISTENCE — localStorage
+// ─────────────────────────────────────────────────────────────
+const LS_KEY = 'mcq_quiz_data_v2';
+
+function saveQuizData() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(quizData)); } catch(e) {}
+}
+
+function loadQuizData() {
+    try {
+        const stored = localStorage.getItem(LS_KEY);
+        if (stored) return JSON.parse(stored);
+    } catch(e) {}
+    return null;
+}
+
+// Merge stored data onto defaults (so new defaults always appear)
+function mergeData(base, stored) {
+    const merged = JSON.parse(JSON.stringify(base));
+    for (const subj in stored) {
+        if (!merged[subj]) merged[subj] = {};
+        for (const chap in stored[subj]) {
+            merged[subj][chap] = stored[subj][chap];
+        }
+    }
+    return merged;
+}
+
+const storedData = loadQuizData();
+let quizData = storedData ? mergeData(defaultQuizData, storedData) : JSON.parse(JSON.stringify(defaultQuizData));
+
+// ─────────────────────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────────────────────
+let currentSubject = '';
+let currentChapter = '';
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let selectedOption = null;
+let isTestInProgress = false;
+let questionStartTime = null;
+let questionTimes = [];
+let selectedAnswers = [];
+let testStartTime = null;
+let timerInterval = null;
+
+window.onbeforeunload = () => isTestInProgress ? "Test in progress! Progress will be lost." : undefined;
+
+// ─────────────────────────────────────────────────────────────
+//  NAVIGATION HELPERS
+// ─────────────────────────────────────────────────────────────
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+    isTestInProgress = false;
+    clearInterval(timerInterval);
+    showScreen('start-screen');
+    showSubjects();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SUBJECT / CHAPTER RENDERING
+// ─────────────────────────────────────────────────────────────
+function countQuestions(subject) {
+    let n = 0;
+    for (const ch in quizData[subject]) n += quizData[subject][ch].length;
+    return n;
+}
+
+function renderSubjects() {
+    const grid = document.getElementById('subject-grid');
+    grid.innerHTML = '';
+    for (const subj in quizData) {
+        const meta = subjectMeta[subj] || { icon: "📚", color: "#6c63ff" };
+        const total = countQuestions(subj);
+        const chapCount = Object.keys(quizData[subj]).length;
+        const card = document.createElement('div');
+        card.className = 'subject-card';
+        card.style.borderColor = 'transparent';
+        card.onmouseenter = () => card.style.borderColor = meta.color;
+        card.onmouseleave = () => card.style.borderColor = 'transparent';
+        card.innerHTML = `
+            <div class="subject-icon">${meta.icon}</div>
+            <div class="subject-name">${subj.toUpperCase()}</div>
+            <div class="subject-count">${chapCount} chapters · ${total} Qs</div>
+        `;
+        card.onclick = () => showChapters(subj);
+        grid.appendChild(card);
+    }
+}
+
+function showSubjects() {
+    document.getElementById('subject-view').style.display = '';
+    document.getElementById('chapter-view').style.display = 'none';
+    renderSubjects();
+}
+
+function showChapters(subject) {
+    document.getElementById('subject-view').style.display = 'none';
+    document.getElementById('chapter-view').style.display = '';
+    document.getElementById('breadcrumb-subject').textContent = subject;
+
+    const list = document.getElementById('chapter-list');
+    list.innerHTML = '';
+    const chapters = quizData[subject];
+
+    for (const chap in chapters) {
+        const qCount = chapters[chap].length;
+        const row = document.createElement('div');
+        row.className = 'chapter-row';
+        row.innerHTML = `
+            <div class="chapter-info">
+                <div class="chapter-name">${chap}</div>
+                <div class="chapter-qcount">${qCount} question${qCount !== 1 ? 's' : ''}</div>
+            </div>
+            <button class="btn btn-sm" onclick="confirmStart('${subject.replace(/'/g,"\\'")}', '${chap.replace(/'/g,"\\'")}')">▶ Start</button>
+        `;
+        list.appendChild(row);
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  START TEST
+// ─────────────────────────────────────────────────────────────
+function confirmStart(subject, chapter) {
+    const qCount = quizData[subject][chapter].length;
+    if (qCount === 0) { alert('No questions in this chapter yet. Add some via the Admin Panel!'); return; }
+    if (confirm(`Start "${chapter}" test?\n\n${qCount} questions · No time limit\n\nYou cannot go back once you begin.`)) {
+        startTest(subject, chapter);
+    }
+}
+
+function startTest(subject, chapter) {
+    isTestInProgress = true;
+    currentSubject = subject;
+    currentChapter = chapter;
+    currentQuestions = quizData[subject][chapter];
+    currentQuestionIndex = 0;
+    score = 0;
+    selectedOption = null;
+    questionTimes = [];
+    selectedAnswers = [];
+    testStartTime = Date.now();
+
+    document.getElementById('total-q-num').textContent = currentQuestions.length;
+    document.getElementById('quiz-subject-tag').textContent = `${subject} › ${chapter}`;
+    showScreen('quiz-screen');
+    loadQuestion();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  QUIZ LOGIC
+// ─────────────────────────────────────────────────────────────
+function loadQuestion() {
+    const data = currentQuestions[currentQuestionIndex];
+    const total = currentQuestions.length;
+
+    document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+    document.getElementById('question-text').textContent = data.question;
+    document.getElementById('progress-fill').style.width = (currentQuestionIndex / total * 100) + '%';
+
+    const list = document.getElementById('options-list');
+    list.innerHTML = '';
+    selectedOption = null;
+    document.getElementById('next-btn').disabled = true;
+
+    data.options.forEach((opt, i) => {
+        const li = document.createElement('li');
+        li.className = 'option';
+        li.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span>${opt}`;
+        li.onclick = () => selectOption(i, li);
+        list.appendChild(li);
+    });
+
+    questionStartTime = Date.now();
+    startLiveTimer();
+}
+
+function startLiveTimer() {
+    clearInterval(timerInterval);
+    const badge = document.getElementById('timer-badge');
+    timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - questionStartTime) / 1000);
+        const m = Math.floor(elapsed / 60);
+        const s = elapsed % 60;
+        document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+        badge.classList.toggle('urgent', elapsed >= 60);
+    }, 500);
+}
+
+function selectOption(index, el) {
+    selectedOption = index;
+    document.querySelectorAll('.option').forEach(o => {
+        o.classList.remove('selected');
+        o.querySelector('.opt-letter').style.background = '';
+    });
+    el.classList.add('selected');
+    document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+    clearInterval(timerInterval);
+    const elapsed = Math.round((Date.now() - questionStartTime) / 1000);
+    questionTimes.push(elapsed);
+    selectedAnswers.push(selectedOption);
+
+    if (selectedOption === currentQuestions[currentQuestionIndex].correct) score++;
+
+    currentQuestionIndex++;
+    if (currentQuestionIndex < currentQuestions.length) {
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  RESULTS
+// ─────────────────────────────────────────────────────────────
+function showResults() {
+    isTestInProgress = false;
+    showScreen('results-screen');
+
+    const total = currentQuestions.length;
+    const pct = Math.round((score / total) * 100);
+    const wrong = total - score;
+    const totalSec = Math.round((Date.now() - testStartTime) / 1000);
+    const avgSec = Math.round(questionTimes.reduce((a,b)=>a+b,0) / total);
+
+    document.getElementById('result-title').textContent = `${currentSubject.toUpperCase()} › ${currentChapter}`;
+
+    const circ = 2 * Math.PI * 55;
+    const offset = circ - (pct / 100) * circ;
+    setTimeout(() => { document.getElementById('ring-fill').style.strokeDashoffset = offset; }, 100);
+
+    document.getElementById('big-score').textContent = `${score}/${total}`;
+    document.getElementById('big-pct').textContent = `${pct}%`;
+    document.getElementById('stat-correct').textContent = score;
+    document.getElementById('stat-wrong').textContent = wrong;
+    document.getElementById('stat-avg-time').textContent = fmtTime(avgSec);
+
+    const totalMin = Math.floor(totalSec/60), totalS = totalSec%60;
+    document.getElementById('total-time-display').textContent = `Total time: ${totalMin}m ${totalS}s`;
+
+    let fb = "";
+    if (pct === 100) fb = "💯 gall baat!";
+    else if (pct >= 75) fb = "🔥 sarpanch saab!";
+    else if (pct >= 50) fb = "😅 ki gall ho gayi danasaurrr uncle";
+    else fb = "💀 dealer da number launa pena";
+    document.getElementById('feedback-text').textContent = fb;
+
+    buildReview();
+}
+
+function buildReview() {
+    const list = document.getElementById('review-list');
+    list.innerHTML = '';
+
+    currentQuestions.forEach((q, i) => {
+        const userAns = selectedAnswers[i];
+        const isCorrect = userAns === q.correct;
+        const timeTaken = questionTimes[i];
+
+        const card = document.createElement('div');
+        card.className = `review-card ${isCorrect ? 'correct-card' : 'wrong-card'}`;
+        card.innerHTML = `
+            <div class="review-card-top">
+                <div>
+                    <div class="rc-qnum">Question ${i+1}</div>
+                    <div class="rc-question" style="margin-top:4px">${q.question}</div>
+                </div>
+                <span class="rc-status ${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? '✓ Correct' : '✗ Wrong'}</span>
+            </div>
+            <div class="rc-time">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Time spent: ${fmtTime(timeTaken)}
+            </div>
+            <div class="rc-options">
+                ${q.options.map((opt, oi) => {
+                    let cls = 'opt-neutral', icon = '';
+                    if (oi === q.correct) { cls = 'opt-correct'; icon = '✓'; }
+                    else if (oi === userAns && !isCorrect) { cls = 'opt-wrong'; icon = '✗'; }
+                    return `<div class="rc-opt ${cls}">
+                        <span class="rc-opt-letter">${String.fromCharCode(65+oi)}</span>
+                        <span>${opt}</span>
+                        ${icon ? `<span class="opt-icon">${icon}</span>` : ''}
+                    </div>`;
+                }).join('')}
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function fmtTime(sec) {
+    if (sec < 60) return `${sec}s`;
+    return `${Math.floor(sec/60)}m ${sec%60}s`;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  ADMIN PANEL
+// ─────────────────────────────────────────────────────────────
+function initAdminForm() {
+    const subjSel = document.getElementById('admin-subject');
+    subjSel.innerHTML = '<option value="">— Select Subject —</option>';
+    for (const subj in quizData) {
+        const opt = document.createElement('option');
+        opt.value = subj;
+        opt.textContent = subj;
+        subjSel.appendChild(opt);
+    }
+    document.getElementById('admin-chapter').innerHTML = '<option value="">— Select Chapter —</option>';
+    document.getElementById('new-chapter-group').style.display = 'none';
+    document.getElementById('new-chapter-name').value = '';
+    document.getElementById('admin-question').value = '';
+    ['opt-0','opt-1','opt-2','opt-3'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('input[name="correct-ans"]').forEach(r => r.checked = false);
+    hideAlert();
+}
+
+function onAdminSubjectChange() {
+    const subj = document.getElementById('admin-subject').value;
+    const chapSel = document.getElementById('admin-chapter');
+    chapSel.innerHTML = '<option value="">— Select Chapter —</option>';
+    document.getElementById('new-chapter-group').style.display = 'none';
+
+    if (!subj) return;
+    const chapters = quizData[subj] || {};
+    for (const ch in chapters) {
+        const opt = document.createElement('option');
+        opt.value = ch;
+        opt.textContent = ch;
+        chapSel.appendChild(opt);
+    }
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '+ Create New Chapter';
+    chapSel.appendChild(newOpt);
+}
+
+function onAdminChapterChange() {
+    const val = document.getElementById('admin-chapter').value;
+    document.getElementById('new-chapter-group').style.display = val === '__new__' ? '' : 'none';
+}
+
+function showAlert(msg, type) {
+    const el = document.getElementById('admin-alert');
+    el.textContent = msg;
+    el.className = `alert ${type} show`;
+}
+
+function hideAlert() {
+    document.getElementById('admin-alert').className = 'alert';
+}
+
+function submitAdminForm() {
+    hideAlert();
+    const subj = document.getElementById('admin-subject').value;
+    let chap = document.getElementById('admin-chapter').value;
+    const newChapName = document.getElementById('new-chapter-name').value.trim();
+    const question = document.getElementById('admin-question').value.trim();
+    const opts = ['opt-0','opt-1','opt-2','opt-3'].map(id => document.getElementById(id).value.trim());
+    const correctEl = document.querySelector('input[name="correct-ans"]:checked');
+
+    if (!subj) { showAlert('Please select a subject.', 'error'); return; }
+    if (!chap) { showAlert('Please select or create a chapter.', 'error'); return; }
+    if (chap === '__new__') {
+        if (!newChapName) { showAlert('Please enter a chapter name.', 'error'); return; }
+        chap = newChapName;
+    }
+    if (!question) { showAlert('Please enter a question.', 'error'); return; }
+    if (opts.some(o => !o)) { showAlert('Please fill in all 4 options.', 'error'); return; }
+    if (!correctEl) { showAlert('Please select the correct answer.', 'error'); return; }
+
+    const correct = parseInt(correctEl.value);
+
+    // Add to data
+    if (!quizData[subj]) quizData[subj] = {};
+    if (!quizData[subj][chap]) quizData[subj][chap] = [];
+    quizData[subj][chap].push({ question, options: opts, correct });
+
+    saveQuizData();
+    showAlert(`✓ Question added to "${subj} › ${chap}"! (${quizData[subj][chap].length} total in this chapter)`, 'success');
+
+    // Reset form fields (keep subject/chapter selected for easy batch adds)
+    document.getElementById('admin-question').value = '';
+    ['opt-0','opt-1','opt-2','opt-3'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('input[name="correct-ans"]').forEach(r => r.checked = false);
+    document.getElementById('new-chapter-group').style.display = 'none';
+    document.getElementById('new-chapter-name').value = '';
+    // Refresh chapter dropdown in case new chapter was created
+    onAdminSubjectChange();
+    if (chap !== '__new__') document.getElementById('admin-chapter').value = chap;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  BOOT
+// ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    renderSubjects();
+
+    // Init admin form when admin screen shown
+    const adminBtn = document.querySelector('[onclick="showScreen(\'admin-screen\')"]');
+    if (adminBtn) {
+        adminBtn.addEventListener('click', initAdminForm);
+    }
+});
+</script>
+</body>
+</html>
